@@ -26,4 +26,13 @@ export class TasksService {
   public removeTask(index: number) {
     this.tasks.splice(index, 1);
   }
+
+  public getCompletedTasks(): string[] {
+    return this.completedTasks;
+  }
+
+  public uncheckTask(index: number){
+    this.tasks.push(this.completedTasks[index]);
+    this.completedTasks.splice(index, 1);
+  }
 }

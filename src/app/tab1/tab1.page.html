@@ -28,9 +28,14 @@
         <ion-item-sliding *ngFor="let task of tasks; let i = index">
           <ion-item>
             <ion-label>{{task}}</ion-label>
-            <!-- Checkbox -->
-            <ion-checkbox (click)="completeTask(i)" slot="end"></ion-checkbox>
           </ion-item>
+          <!-- Completar tarea -->
+          <ion-item-options side="start" (ionSwipe)="completeTask(i)">
+            <ion-item-option expandable color="success">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+          <!-- Eliminar tarea -->
           <ion-item-options side="end" (ionSwipe)="removeTask(i)">
             <ion-item-option expandable color="danger">
               <ion-icon name="trash-outline"></ion-icon>
