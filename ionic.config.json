@@ -1,0 +1,7 @@
+{
+  "name": "TabsIonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
