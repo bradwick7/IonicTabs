@@ -8,12 +8,12 @@
   <ion-row>
     <ion-col>
       <ion-list>
-        <ion-item-sliding *ngFor="let task of completed; let i = index">
+        <ion-item-sliding *ngFor="let task of completed">
           <ion-item>
-            <ion-label>{{task}}</ion-label>
+            <ion-label>{{task.tarea}}</ion-label>
           </ion-item>
           <!--Uncheck task -->
-          <ion-item-options side="end" (ionSwipe)="uncheckTask(i)">
+          <ion-item-options side="end" (ionSwipe)="uncheckTask(task)">
             <ion-item-option expandable color="warning">
               <ion-icon name="refresh-circle-outline"></ion-icon>
             </ion-item-option>

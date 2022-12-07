@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TasksService } from '../services/tasks.service';
+import { Task } from '../models/task';
 
 @Component({
   selector: 'app-tab1',
@@ -7,28 +8,29 @@ import { TasksService } from '../services/tasks.service';
   styleUrls: ['tab1.page.scss'],
 })
 export class Tab1Page {
-  public tasks: string[];
-  public task: string;
+  public tasks: Task[] = [];
+  public task: Task;
 
   constructor(private tasksService: TasksService) {
-    this.tasks = this.tasksService.getTasks();
-    this.task = '';
+    this.task = {
+      tarea: ''
+    }
+    this.tasksService.getTasks().subscribe( res => {
+      this.tasks = res;
+    })
   }
 
   public addTask() {
     this.tasksService.addTask(this.task);
-    this.tasks = this.tasksService.getTasks();
-    console.log(this.tasks);
-    this.task = '';
+    this.task.tarea = '';
   }
 
-  public completeTask(index: number) {
-    this.tasksService.completeTask(index);
+  public completeTask(task: Task) {
+    this.tasksService.completeTask(task);
   }
 
-  public removeTask(index: number) {
-    this.tasksService.removeTask(index);
-    this.tasks = this.tasksService.getTasks();
+  public removeTask(id: string) {
+    this.tasksService.removeTask(id);
   }
 
   onKeydown(event) {
