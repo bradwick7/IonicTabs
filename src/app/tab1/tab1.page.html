@@ -10,8 +10,8 @@
       <ion-item>
         <ion-label position="floating"> New task </ion-label>
         <ion-input
-          [(ngModel)]="task"
-          (keydown)="onKeydown($event)"
+          [(ngModel)]="description"
+          (keyup.enter)="addTask()"
           [autofocus]="true"
         ></ion-input>
       </ion-item>
@@ -26,17 +26,31 @@
     <ion-col>
       <ion-list>
         <ion-item-sliding *ngFor="let task of tasks; let i = index">
-          <ion-item>
-            <ion-label>{{task}}</ion-label>
+          <ion-item *ngIf="task.completed !== true">
+            <ion-label>{{task.description}}</ion-label>
+            <!-- Edit task -->
+            <ion-button
+              (click)="editTask(task.id)"
+              slot="end"
+              size="default"
+              color="success"
+            >
+              <ion-icon name="options"></ion-icon>
+            </ion-button>
+            <!-- Complete tarea -->
+            <ion-checkbox
+              [checked]="task.completed"
+              (ionChange)="checkTask(task, task.id)"
+              slot="end"
+            ></ion-checkbox>
           </ion-item>
-          <!-- Completar tarea -->
-          <ion-item-options side="start" (ionSwipe)="completeTask(i)">
+          <!-- <ion-item-options side="start" (ionSwipe)="completeTask(task.id)">
             <ion-item-option expandable color="success">
               <ion-icon name="checkmark-circle-outline"></ion-icon>
             </ion-item-option>
-          </ion-item-options>
+          </ion-item-options> -->
           <!-- Eliminar tarea -->
-          <ion-item-options side="end" (ionSwipe)="removeTask(i)">
+          <ion-item-options side="end" (ionSwipe)="removeTask(task.id)">
             <ion-item-option expandable color="danger">
               <ion-icon name="trash-outline"></ion-icon>
             </ion-item-option>

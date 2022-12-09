@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { TasksService } from '../services/tasks.service';
+import { Task } from '../Task';
+import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -7,33 +10,61 @@ import { TasksService } from '../services/tasks.service';
   styleUrls: ['tab1.page.scss'],
 })
 export class Tab1Page {
-  public tasks: string[];
-  public task: string;
+  public tasks: Task[];
+  public task: Task;
+  public description: string;
+  public id: string;
 
-  constructor(private tasksService: TasksService) {
-    this.tasks = this.tasksService.getTasks();
-    this.task = '';
+  constructor(
+    private tasksService: TasksService,
+    private alertController: AlertController,
+    private router: Router
+  ) {
+    this.tasksService.getTasks().subscribe((res) => {
+      this.tasks = res;
+      console.log(this.tasks);
+    });
   }
 
   public addTask() {
+    this.task = {
+      description: this.description,
+      completed: false,
+    };
     this.tasksService.addTask(this.task);
-    this.tasks = this.tasksService.getTasks();
-    console.log(this.tasks);
-    this.task = '';
+    this.description = '';
   }
 
-  public completeTask(index: number) {
-    this.tasksService.completeTask(index);
+  public checkTask(task: Task, id: string) {
+    task.completed = !task.completed;
+    this.tasksService.updateTask(task, id);
   }
 
-  public removeTask(index: number) {
-    this.tasksService.removeTask(index);
-    this.tasks = this.tasksService.getTasks();
+  public editTask(id: string) {
+    this.router.navigate(['/edit-task'], {
+      queryParams: { id: id },
+    });
   }
 
-  onKeydown(event) {
-    if (event.key === 'Enter') {
-      this.addTask();
-    }
+  public async removeTask(id: string) {
+    const alert = await this.alertController.create({
+      header: 'Are you sure?',
+      subHeader: 'Do you wish to remove this item?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {},
+        },
+        {
+          text: 'Yes',
+          role: 'confirm',
+          handler: () => {
+            this.tasksService.removeTask(id);
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 }

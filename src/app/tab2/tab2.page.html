@@ -8,16 +8,21 @@
   <ion-row>
     <ion-col>
       <ion-list>
-        <ion-item-sliding *ngFor="let task of completed; let i = index">
-          <ion-item>
-            <ion-label>{{task}}</ion-label>
+        <ion-item-sliding *ngFor="let task of tasks; let i = index">
+          <ion-item *ngIf="task.completed === true">
+            <ion-label>{{task.description}}</ion-label>
+            <ion-checkbox
+              [checked]="task.completed"
+              (ionChange)="checkTask(task, task.id)"
+              slot="end"
+            ></ion-checkbox>
           </ion-item>
           <!--Uncheck task -->
-          <ion-item-options side="end" (ionSwipe)="uncheckTask(i)">
+          <!-- <ion-item-options side="end" (ionSwipe)="uncheckTask(i)">
             <ion-item-option expandable color="warning">
               <ion-icon name="refresh-circle-outline"></ion-icon>
             </ion-item-option>
-          </ion-item-options>
+          </ion-item-options> -->
         </ion-item-sliding>
       </ion-list>
     </ion-col>

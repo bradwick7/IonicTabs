@@ -1,38 +1,45 @@
 import { Injectable } from '@angular/core';
+import { Task } from '../Task';
+import { map } from 'rxjs/operators';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TasksService {
-  private tasks: string[] = [];
-  private completedTasks: string[] = [];
+  public tasks: Task[];
 
-  constructor() {}
+  constructor(private firestore: AngularFirestore) {}
 
-  public getTasks(): string[] {
-    return this.tasks;
+  public getTasks() {
+    return this.firestore
+      .collection('tasks')
+      .snapshotChanges()
+      .pipe(
+        map((actions) => {
+          return actions.map((a) => {
+            const data = a.payload.doc.data() as Task;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        })
+      );
   }
 
-  public addTask(task: string) {
-    this.tasks.push(task);
+  public addTask(task: Task) {
+    this.firestore.collection('tasks').add(task);
   }
 
-  public completeTask(index: number) {
-    this.completedTasks.push(this.tasks[index]);
-    this.removeTask(index);
-    console.log('Completed Tasks:' + this.completedTasks);
+  public updateTask(task: Task, id: string) {
+    this.firestore.doc('tasks/' + id).update(task);
   }
 
-  public removeTask(index: number) {
-    this.tasks.splice(index, 1);
+  public removeTask(id: string) {
+    this.firestore.collection('tasks').doc(id).delete();
   }
 
-  public getCompletedTasks(): string[] {
-    return this.completedTasks;
-  }
-
-  public uncheckTask(index: number){
-    this.tasks.push(this.completedTasks[index]);
-    this.completedTasks.splice(index, 1);
+  public getTaskById(id: string) {
+    let result = this.firestore.collection('tasks').doc(id).valueChanges();
+    return result;
   }
 }
